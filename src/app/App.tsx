@@ -1,5 +1,3 @@
-import "@/index.css";
-
 export default function App() {
   return (
     <main className="min-h-screen bg-stone-950 text-stone-100">
