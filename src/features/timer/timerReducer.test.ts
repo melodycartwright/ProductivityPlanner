@@ -93,3 +93,18 @@ it("transitions from focus to long break every fourth completed focus session", 
   expect(nextState.completedFocusCount).toBe(4);
   expect(nextState.remainingMs).toBe(DEFAULT_TIMER_DURATIONS.longBreakMs);
 });
+it("skips the current phase without counting an incomplete focus session", () => {
+  const focusState = timerReducer(createInitialTimerState(), {
+    type: "START",
+    now: 15_000,
+  });
+
+  const nextState = timerReducer(focusState, {
+    type: "SKIP",
+    now: 30_000,
+  });
+
+  expect(nextState.phase).toBe("shortBreak");
+  expect(nextState.completedFocusCount).toBe(0);
+  expect(nextState.remainingMs).toBe(DEFAULT_TIMER_DURATIONS.shortBreakMs);
+});
