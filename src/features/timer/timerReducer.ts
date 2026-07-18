@@ -159,6 +159,5 @@ export function timerReducer(
         totalMs: state.durations.focusMs,
         isPaused: false,
       };
-      return state;
   }
 }

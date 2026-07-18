@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
 
 import {
   createInitialTimerState,
@@ -15,6 +15,20 @@ export function usePomodoroTimer(
     durations,
     createInitialTimerState,
   );
+
+  useEffect(() => {
+    if (state.phase === "idle" || state.isPaused) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      dispatch({ type: "TICK", now: Date.now() });
+    }, 1000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [state.phase, state.isPaused]);
 
   return {
     state,
