@@ -99,13 +99,24 @@ export function timerReducer(
 
       if (action.now >= state.endTimestamp) {
         if (state.phase === "focus") {
+          const nextCompletedFocusCount = state.completedFocusCount + 1;
+          const nextPhase =
+            nextCompletedFocusCount % state.durations.longBreakInterval === 0
+              ? "longBreak"
+              : "shortBreak";
+
+          const nextDuration =
+            nextPhase === "longBreak"
+              ? state.durations.longBreakMs
+              : state.durations.shortBreakMs;
+
           return {
             ...state,
-            phase: "shortBreak",
-            completedFocusCount: state.completedFocusCount + 1,
-            endTimestamp: action.now + state.durations.shortBreakMs,
-            remainingMs: state.durations.shortBreakMs,
-            totalMs: state.durations.shortBreakMs,
+            phase: nextPhase,
+            completedFocusCount: nextCompletedFocusCount,
+            endTimestamp: action.now + nextDuration,
+            remainingMs: nextDuration,
+            totalMs: nextDuration,
             isPaused: false,
           };
         }

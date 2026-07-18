@@ -78,3 +78,18 @@ it("transitions from focus to short break when the timer reaches zero", () => {
     startedState.endTimestamp! + DEFAULT_TIMER_DURATIONS.shortBreakMs,
   );
 });
+it("transitions from focus to long break every fourth completed focus session", () => {
+  const focusState = {
+    ...timerReducer(createInitialTimerState(), { type: "START", now: 2_000 }),
+    completedFocusCount: 3,
+  };
+
+  const nextState = timerReducer(focusState, {
+    type: "TICK",
+    now: focusState.endTimestamp!,
+  });
+
+  expect(nextState.phase).toBe("longBreak");
+  expect(nextState.completedFocusCount).toBe(4);
+  expect(nextState.remainingMs).toBe(DEFAULT_TIMER_DURATIONS.longBreakMs);
+});
