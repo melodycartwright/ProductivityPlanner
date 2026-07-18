@@ -89,6 +89,21 @@ export function timerReducer(
       };
     case "SKIP":
     case "TICK":
+      if (
+        state.phase === "idle" ||
+        state.isPaused ||
+        state.endTimestamp === null
+      ) {
+        return state;
+      }
+
+      return {
+        ...state,
+        remainingMs: Math.max(state.endTimestamp - action.now, 0),
+      };
+
+    case "SKIP":
+      return state;
       return state;
   }
 }

@@ -44,3 +44,19 @@ describe("timerReducer", () => {
     );
   });
 });
+it("updates remaining time from the absolute end timestamp", () => {
+  const startedState = timerReducer(createInitialTimerState(), {
+    type: "START",
+    now: 10_000,
+  });
+
+  const tickedState = timerReducer(startedState, {
+    type: "TICK",
+    now: 70_000,
+  });
+
+  expect(tickedState.remainingMs).toBe(
+    DEFAULT_TIMER_DURATIONS.focusMs - 60_000,
+  );
+  expect(tickedState.endTimestamp).toBe(startedState.endTimestamp);
+});
