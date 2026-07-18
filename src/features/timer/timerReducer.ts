@@ -97,6 +97,29 @@ export function timerReducer(
         return state;
       }
 
+      if (action.now >= state.endTimestamp) {
+        if (state.phase === "focus") {
+          return {
+            ...state,
+            phase: "shortBreak",
+            completedFocusCount: state.completedFocusCount + 1,
+            endTimestamp: action.now + state.durations.shortBreakMs,
+            remainingMs: state.durations.shortBreakMs,
+            totalMs: state.durations.shortBreakMs,
+            isPaused: false,
+          };
+        }
+
+        return {
+          ...state,
+          phase: "focus",
+          endTimestamp: action.now + state.durations.focusMs,
+          remainingMs: state.durations.focusMs,
+          totalMs: state.durations.focusMs,
+          isPaused: false,
+        };
+      }
+
       return {
         ...state,
         remainingMs: Math.max(state.endTimestamp - action.now, 0),

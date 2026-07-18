@@ -60,3 +60,21 @@ it("updates remaining time from the absolute end timestamp", () => {
   );
   expect(tickedState.endTimestamp).toBe(startedState.endTimestamp);
 });
+it("transitions from focus to short break when the timer reaches zero", () => {
+  const startedState = timerReducer(createInitialTimerState(), {
+    type: "START",
+    now: 5_000,
+  });
+
+  const nextState = timerReducer(startedState, {
+    type: "TICK",
+    now: startedState.endTimestamp!,
+  });
+
+  expect(nextState.phase).toBe("shortBreak");
+  expect(nextState.completedFocusCount).toBe(1);
+  expect(nextState.remainingMs).toBe(DEFAULT_TIMER_DURATIONS.shortBreakMs);
+  expect(nextState.endTimestamp).toBe(
+    startedState.endTimestamp! + DEFAULT_TIMER_DURATIONS.shortBreakMs,
+  );
+});
