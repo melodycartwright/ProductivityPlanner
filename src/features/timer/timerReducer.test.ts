@@ -108,3 +108,13 @@ it("skips the current phase without counting an incomplete focus session", () =>
   expect(nextState.completedFocusCount).toBe(0);
   expect(nextState.remainingMs).toBe(DEFAULT_TIMER_DURATIONS.shortBreakMs);
 });
+it("resets back to the initial idle state", () => {
+  const focusState = timerReducer(createInitialTimerState(), {
+    type: "START",
+    now: 42_000,
+  });
+
+  const resetState = timerReducer(focusState, { type: "RESET" });
+
+  expect(resetState).toEqual(createInitialTimerState());
+});
