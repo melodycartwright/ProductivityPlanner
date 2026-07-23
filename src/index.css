@@ -1,11 +1,19 @@
 @import "tailwindcss";
+@theme {
+  --color-cover: #100e0c;
+  --color-paper: #f6f1e7;
+  --color-ink: #17140f;
+  --color-gold: #c9a24b;
+  --color-tomato: #d94f30;
+  --color-tomato-dark: #a53a22;
+}
 
 :root {
   font-family: ui-sans-serif, system-ui, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  color: #17140f;
-  background-color: #100e0c;
+  color: var(--color-ink);
+  background-color: var(--color-cover);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
