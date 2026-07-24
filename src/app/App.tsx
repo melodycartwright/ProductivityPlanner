@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { requestNotificationPermission } from "../shared/lib/notifications";
+import { playPhaseChangeChime } from "../shared/lib/sound";
 import { TimerControls } from "../features/timer/TimerControls";
 import { TimerDisplay } from "../features/timer/TimerDisplay";
 import { usePomodoroTimer } from "../features/timer/usePomodoroTimer";
@@ -8,8 +9,13 @@ import { usePomodoroTimer } from "../features/timer/usePomodoroTimer";
 export default function App() {
   const [notificationPermission, setNotificationPermission] =
     useState<NotificationPermission>("default");
-
-  const { state, start, pause, resume, skip, reset } = usePomodoroTimer();
+  function handlePhaseChange() {
+    playPhaseChangeChime();
+  }
+  const { state, start, pause, resume, skip, reset } = usePomodoroTimer(
+    undefined,
+    handlePhaseChange,
+  );
   async function handleEnableAlerts() {
     const permission = await requestNotificationPermission();
     setNotificationPermission(permission);
