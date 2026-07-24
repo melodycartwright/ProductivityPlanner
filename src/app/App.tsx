@@ -1,9 +1,19 @@
+import { useState } from "react";
+
+import { requestNotificationPermission } from "../shared/lib/notifications";
 import { TimerControls } from "../features/timer/TimerControls";
 import { TimerDisplay } from "../features/timer/TimerDisplay";
 import { usePomodoroTimer } from "../features/timer/usePomodoroTimer";
 
 export default function App() {
+  const [notificationPermission, setNotificationPermission] =
+    useState<NotificationPermission>("default");
+
   const { state, start, pause, resume, skip, reset } = usePomodoroTimer();
+  async function handleEnableAlerts() {
+    const permission = await requestNotificationPermission();
+    setNotificationPermission(permission);
+  }
 
   return (
     <main className="min-h-dvh bg-cover text-paper">
@@ -35,8 +45,22 @@ export default function App() {
           />
         </div>
 
-        <footer className="text-center text-sm text-paper/70">
-          {state.completedFocusCount} focus sessions completed
+        <footer className="flex flex-col items-center gap-3 text-center text-sm text-paper/70">
+          <p>{state.completedFocusCount} focus sessions completed</p>
+
+          {notificationPermission === "default" ? (
+            <button
+              type="button"
+              onClick={handleEnableAlerts}
+              className="min-h-11 rounded border border-gold/60 px-4 font-medium text-gold transition-colors hover:bg-gold hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+            >
+              Enable alerts
+            </button>
+          ) : notificationPermission === "granted" ? (
+            <p>Alerts enabled</p>
+          ) : (
+            <p>Alerts are off. You’ll still see in-app updates.</p>
+          )}
         </footer>
       </div>
     </main>
