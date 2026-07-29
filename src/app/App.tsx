@@ -13,9 +13,16 @@ import { playPhaseChangeChime } from "@/shared/lib/sound";
 export default function App() {
   const [notificationPermission, setNotificationPermission] =
     useState<NotificationPermission>("default");
+  const [inAppAlert, setInAppAlert] = useState<string | null>(null);
   function handlePhaseChange(phase: NotificationPhase) {
+    const message =
+      phase === "focus" ? "Focus session started." : "Time for a break.";
+
     playPhaseChangeChime();
-    notifyPhaseChange(phase);
+
+    if (!notifyPhaseChange(phase)) {
+      setInAppAlert(message);
+    }
   }
   const { state, start, pause, resume, skip, reset } = usePomodoroTimer(
     undefined,
@@ -24,6 +31,9 @@ export default function App() {
   async function handleEnableAlerts() {
     const permission = await requestNotificationPermission();
     setNotificationPermission(permission);
+    if (permission === "granted") {
+      setInAppAlert(null);
+    }
   }
 
   return (
@@ -37,7 +47,14 @@ export default function App() {
             One task at a time.
           </h1>
         </header>
-
+        {inAppAlert ? (
+          <div
+            role="status"
+            className="mt-6 rounded border border-gold/60 bg-paper px-4 py-3 text-center text-sm font-medium text-ink"
+          >
+            {inAppAlert}
+          </div>
+        ) : null}
         <div className="flex flex-1 flex-col items-center justify-center gap-10 py-12">
           <TimerDisplay
             phase={state.phase}
