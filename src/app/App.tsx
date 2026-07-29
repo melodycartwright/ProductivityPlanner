@@ -1,16 +1,21 @@
 import { useState } from "react";
 
-import { requestNotificationPermission } from "../shared/lib/notifications";
-import { playPhaseChangeChime } from "../shared/lib/sound";
+import {
+  notifyPhaseChange,
+  requestNotificationPermission,
+  type NotificationPhase,
+} from "../shared/lib/notifications";
 import { TimerControls } from "../features/timer/TimerControls";
 import { TimerDisplay } from "../features/timer/TimerDisplay";
 import { usePomodoroTimer } from "../features/timer/usePomodoroTimer";
+import { playPhaseChangeChime } from "@/shared/lib/sound";
 
 export default function App() {
   const [notificationPermission, setNotificationPermission] =
     useState<NotificationPermission>("default");
-  function handlePhaseChange() {
+  function handlePhaseChange(phase: NotificationPhase) {
     playPhaseChangeChime();
+    notifyPhaseChange(phase);
   }
   const { state, start, pause, resume, skip, reset } = usePomodoroTimer(
     undefined,
